@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>프로젝트 아카이브 (프로토타입)</title>
+<style>
+:root{--g:#16a34a;--gd:#15803d;--gbg:#f0fdf4;--ink:#111827;--sub:#6b7280;--line:#e5e7eb;--soft:#f9fafb;--bad:#dc2626;--next:#d97706}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+p{margin:0}
+input,select,textarea{font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;background:#fff}
+.brand{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;padding:2px 10px 20px}
+.brand i{width:10px;height:10px;border-radius:3px;background:var(--g);display:inline-block}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;width:100%;align-items:center;justify-content:space-between;border:0;background:none;padding:9px 12px;border-radius:8px;color:var(--sub);font:inherit;font-weight:500;cursor:pointer;text-align:left}
+.nav button:hover{background:var(--soft);color:var(--ink)}
+.nav button.on{background:var(--gbg);color:var(--gd)}
+.nav small{font-size:12px;color:var(--sub)}
+.nav button.on small{color:var(--gd)}
+.side-foot{margin-top:auto}
+.main{min-width:0}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 32px}
+.topbar .search{max-width:520px}
+.topbar input{background:var(--soft)}
+.wrap{max-width:1040px;padding:28px 32px 90px}
+.btn{font:inherit;font-weight:500;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--g);border-color:var(--g);color:#fff}
+.btn.primary:hover{background:var(--gd)}
+.btn.danger{color:var(--bad)}
+.btn.ghost{border-color:transparent;background:none;color:var(--sub);padding-left:0}
+.head{margin-bottom:22px}
+.head h2{font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-.02em}
+.head p{color:var(--sub)}
+.sec-h{font-size:15px;font-weight:700;margin:28px 0 12px}
+.sub{color:var(--sub);font-size:13px}
+.metrics{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px;flex-wrap:wrap}
+.metric{flex:1;padding:18px 20px;border-left:1px solid var(--line);min-width:140px}
+.metric:first-child{border-left:0}
+.metric b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.metric.acc b{color:var(--gd)}
+.metric span{color:var(--sub);font-size:13px}
+.panel-card{border:1px solid var(--line);border-radius:14px;padding:20px}
+.panel-card h3{font-size:15px;font-weight:700;margin:0 0 2px}
+.panel-card .sub{margin-bottom:16px}
+.bars{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}
+.bar-col{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;font:inherit;color:var(--sub)}
+.bar-area{height:130px;width:100%;display:flex;align-items:flex-end}
+.bar-fill{width:100%;background:var(--soft);border:1px solid var(--line);border-radius:6px 6px 2px 2px;position:relative}
+.bar-fill.hit{background:var(--g);border-color:var(--g)}
+.bar-fill span{position:absolute;top:-22px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;color:var(--gd)}
+.bar-col:hover .bar-fill{border-color:var(--g)}
+.bar-col small{font-size:12px}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.feat{border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;position:relative;background:#fff}
+.feat::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--g)}
+.feat.external::before{background:#94a3b8}
+.feat:hover{border-color:#cbd5e1}
+.feat h4{margin:12px 0 4px;font-size:15px;line-height:1.4}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.cloud{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.kw{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;cursor:pointer;font:inherit;color:var(--ink)}
+.kw small{color:var(--sub);margin-left:4px}
+.kw:hover{border-color:var(--g)}
+.kw.on{background:var(--g);border-color:var(--g);color:#fff}
+.kw.on small{color:#dcfce7}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:16px}
+.stat b{display:block;font-size:26px;font-weight:700;color:var(--gd)}
+.stat span{color:var(--sub);font-size:13px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.seg button{border:1px solid var(--line);background:#fff;padding:7px 14px;border-radius:999px;cursor:pointer;font:inherit;font-weight:500;color:var(--ink)}
+.seg button.on{background:var(--g);border-color:var(--g);color:#fff}
+.mrow{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-bottom:16px}
+.mc{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 0;text-align:center;cursor:pointer;font:inherit;color:var(--ink)}
+.mc b{display:block;font-weight:600;font-size:13px}
+.mc small{color:var(--gd);font-size:12px;font-weight:600}
+.mc.off{opacity:.4;cursor:default}
+.mc:not(.off):hover{border-color:var(--g)}
+.msec{margin-top:26px;scroll-margin-top:90px}
+.mh{display:flex;align-items:baseline;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.mh h3{margin:0;font-size:16px;font-weight:700}
+.mh span{color:var(--sub);font-size:13px}
+.rows{border-top:1px solid var(--line)}
+.ri{display:grid;grid-template-columns:92px 1fr auto auto;gap:14px;align-items:center;padding:14px 8px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:6px}
+.ri:hover{background:var(--soft)}
+.ri-date{color:var(--sub);font-variant-numeric:tabular-nums;font-size:13px}
+.ri-t{font-weight:600}
+.ri-s{color:var(--sub);font-size:13px}
+.ri-n{color:var(--sub);font-size:12px;white-space:nowrap}
+.tag{font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;white-space:nowrap;display:inline-block}
+.tag.company{background:#dcfce7;color:var(--gd)}
+.tag.external{background:#f3f4f6;color:#374151}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;background:var(--soft);border:1px solid var(--line);color:#374151;padding:2px 9px;border-radius:6px}
+.gantt .g-head,.gantt .g-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center}
+.g-head{font-size:12px;color:var(--sub);margin-bottom:8px}
+.g-months{display:grid;grid-template-columns:repeat(12,1fr);text-align:center}
+.g-row{padding:6px 0;border-top:1px solid var(--line)}
+.g-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-size:13px}
+.g-label:hover{color:var(--gd)}
+.g-track{position:relative;height:30px;background-image:linear-gradient(to right,var(--line) 1px,transparent 1px);background-size:calc(100% / 12) 100%;border-radius:6px}
+.g-bar{position:absolute;top:4px;bottom:4px;border-radius:6px;color:#fff;font-size:12px;padding:0 8px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.g-bar.company{background:var(--g)}
+.g-bar.external{background:#64748b}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.lcard{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff}
+.lcard.good{border-left-color:var(--g)}
+.lcard.bad{border-left-color:var(--bad)}
+.lcard.next{border-left-color:var(--next)}
+.lcard .lt{font-weight:700;font-size:13px}
+.lcard.good .lt{color:var(--gd)}
+.lcard.bad .lt{color:var(--bad)}
+.lcard.next .lt{color:#b45309}
+.lcard p{margin-top:6px;white-space:pre-wrap}
+.empty{color:var(--sub);padding:32px 0;text-align:center;border:1px dashed var(--line);border-radius:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.toolbar select{width:auto;min-width:140px}
+.detail{max-width:720px}
+.d-title{font-size:30px;font-weight:700;letter-spacing:-.02em;margin:14px 0 6px;line-height:1.25}
+.d-meta{color:var(--sub);margin-bottom:16px}
+.d-sum{font-size:15px;margin-bottom:28px;padding:14px 16px;background:var(--gbg);border-radius:10px;color:#14532d;white-space:pre-wrap}
+.d-block{margin-bottom:24px}
+.d-block h4{font-size:13px;color:var(--sub);margin:0 0 6px;font-weight:600}
+.d-block p{white-space:pre-wrap}
+.memo{background:var(--soft);border-radius:10px;padding:14px;color:#374151;white-space:pre-wrap;font-size:13px}
+.actions{display:flex;gap:8px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.exp{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+.panel{border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel>label,.sheet label{display:block;font-size:12px;color:var(--sub);font-weight:600;margin:16px 0 6px}
+.panel>label:first-child{margin-top:0}
+.opts label.c{display:flex;align-items:center;gap:8px;color:var(--ink);font-weight:400;margin:6px 0;font-size:14px}
+.opts input[type=checkbox]{width:auto}
+.paper{border:1px solid var(--line);border-radius:12px;padding:40px 44px;min-height:480px}
+.paper h2{font-size:24px;margin:0 0 4px}
+.paper .pj{padding:18px 0;border-bottom:1px solid var(--line)}
+.paper .pj h4{margin:0 0 2px;font-size:17px}
+.paper .pvm{color:var(--sub);font-size:13px;margin-bottom:6px}
+.paper .pvf{margin-top:8px;white-space:pre-wrap}
+.paper .lesson{border-left:3px solid var(--line);padding:4px 10px;margin:6px 0}
+.paper .lesson.good{border-color:var(--g)}
+.paper .lesson.bad{border-color:var(--bad)}
+.paper .lesson.next{border-color:var(--next)}
+.warn{font-size:12px;color:var(--sub);margin-top:14px}
+.snap-edit label{display:block;font-size:12px;color:var(--sub);font-weight:600;margin:16px 0 6px}
+.modal{position:fixed;inset:0;background:rgba(17,24,39,.4);display:none;justify-content:center;align-items:flex-start;overflow:auto;padding:48px 16px;z-index:50}
+.modal.open{display:flex}
+.sheet{background:#fff;border-radius:14px;padding:26px;width:min(700px,100%)}
+.sheet h2{font-size:20px;margin:0 0 4px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lbox{border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px}
+.foot{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+@media print{
+  aside,.topbar,.noprint{display:none!important}
+  .app{display:block}
+  .wrap{padding:0;max-width:none}
+  .exp{display:block}
+  .paper{border:0;padding:0;min-height:0}
+}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:12px 16px;gap:6px}
+  .brand{padding:0 8px 0 0}
+  .nav{flex-direction:row;flex-wrap:wrap;gap:2px}
+  .nav button{width:auto}
+  .side-foot{margin-top:0;margin-left:auto}
+  .topbar{padding:12px 16px}
+  .wrap{padding:20px 16px 90px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .mrow{grid-template-columns:repeat(4,1fr)}
+  .feats,.grid2{grid-template-columns:1fr}
+  .ri{grid-template-columns:78px 1fr auto}
+  .ri .ri-n{display:none}
+  .gantt .g-head,.gantt .g-row{grid-template-columns:110px 1fr}
+  .row2{grid-template-columns:1fr}
+  .exp{grid-template-columns:1fr}
+  .paper{padding:26px 20px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><i></i>Project Archive</div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot"><button class="btn primary" style="width:100%" onclick="openEditor()">+ 프로젝트 추가</button></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="search"><input id="gq" placeholder="프로젝트, 기술, 레슨런 검색 ( / )" oninput="onSearch(this.value)"></div>
+    </div>
+    <main class="wrap" id="main"></main>
+  </div>
+</div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const KEY='year-archive-proto-v1';
+const LT={good:'잘된 점',bad:'아쉬웠던 점',next:'다음에 적용할 것'};
+const PH={plan:'기획',dev:'개발',ops:'운영',collab:'협업'};
+const FIELDS={problem:'Needs',solution:'Solution',contribution:'내가 한 일',process:'진행 과정',outcome:'결과',tech:'사용 기술'};
+const CAT={company:'회사 내',external:'회사 외'};
+const TABS={home:'홈',list:'프로젝트',year:'연도 · 월별',keyword:'키워드',export:'내보내기'};
+const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const META={summary:'한 줄 요약',role:'역할'};
+const TPL={
+  hiring:{label:'채용용',fields:['contribution','outcome','tech'],lessons:['good','next'],mask:false,meta:['summary','role']},
+  client:{label:'클라이언트 제안용',fields:['problem','solution','process','outcome','tech'],lessons:[],mask:true,meta:['summary','role']},
+  brief:{label:'간단 소개용',fields:['outcome'],lessons:[],mask:false,meta:[]}
+};
+
+const SAMPLE=[
+ {id:'p1',title:'결제 실패율 개선',category:'company',organization:'사내 커머스 플랫폼팀',role:'프론트엔드 리드',start:'2026-02-01',end:'2026-05-31',
+  summary:'결제 오류 화면과 재시도 흐름을 개선해 실패율을 낮춘 프로젝트 (예시)',
+  problem:'모바일 결제 실패의 원인이 안내 부족과 재시도 부재에 있었음',
+  solution:'실패 원인별 안내 화면과 자동 재시도 흐름을 제안 (예시)',
+  contribution:'결제 오류 화면 재설계, 자동 재시도 흐름 구현, 오류 이벤트 로그 정의',
+  process:'로그 분석 → 사용자 인터뷰 → 프로토타입 → A/B 테스트',
+  outcome:'결제 실패율 약 30% 감소 (예시 수치, 실제 데이터로 교체)',
+  tech:['React','TypeScript','Amplitude'],tags:['결제','UX'],
+  internalNote:'실 수치는 사내 대시보드 기준. 외부 공개 시 범위 표현으로 바꿀 것',
+  lessons:[
+   {type:'good',phase:'dev',situation:'A/B 테스트 설계',content:'실패 원인별로 지표를 나눠 정의해서 원인 분석이 빨랐다'},
+   {type:'bad',phase:'plan',situation:'요구사항 확정 전 착수',content:'범위가 두 번 바뀌어 초반 작업 일부를 버렸다'},
+   {type:'next',phase:'plan',situation:'범위가 불확실한 작업',content:'착수 전에 "이번 주 완료 범위"를 한 문장으로 합의한다'}
+  ]},
+ {id:'p2',title:'사내 데이터 대시보드 자동화',category:'company',organization:'데이터분석팀',role:'개발 담당',start:'2026-06-01',end:'2026-09-30',
+  summary:'수작업으로 만들던 주간 리포트를 자동화한 프로젝트 (예시)',
+  problem:'매주 여러 쿼리를 손으로 실행하고 엑셀에 붙여 넣던 반복 작업',
+  solution:'쿼리를 표준화하고 스케줄러로 리포트를 자동 생성하는 구조를 제안 (예시)',
+  contribution:'SQL 쿼리 모듈화, 스케줄러 연결, 대시보드 템플릿 작성',
+  process:'현업 요구 정리 → 쿼리 표준화 → 스케줄 배포 → 운영 모니터링',
+  outcome:'주간 리포트 작성 시간 약 6시간 → 10분 (예시)',
+  tech:['Python','SQL','Airflow'],tags:['데이터','자동화'],
+  internalNote:'',
+  lessons:[
+   {type:'good',phase:'dev',situation:'스케줄러 연동',content:'실패 알림을 처음부터 넣어서 운영 중 장애를 바로 알 수 있었다'},
+   {type:'bad',phase:'collab',situation:'지표 정의 공유',content:'정의를 문서로 남기지 않아 같은 질문이 반복됐다'},
+   {type:'next',phase:'collab',situation:'다른 팀과 협업 시작',content:'첫 주에 지표 정의 문서를 만들고 공유한 뒤 개발을 시작한다'}
+  ]},
+ {id:'p3',title:'동네 미용실 예약 웹사이트',category:'external',organization:'개인 고객 (동네 미용실)',role:'기획 · 개발 (1인)',start:'2026-03-01',end:'2026-04-30',
+  summary:'예약과 알림 기능을 갖춘 소형 웹사이트를 1인으로 개발 (예시)',
+  problem:'전화로만 받던 예약을 온라인으로 옮기고 싶다는 요청',
+  solution:'예약 화면과 알림, 간단한 관리자 페이지를 갖춘 소형 웹사이트를 제안 (예시)',
+  contribution:'요구사항 정리, 예약 화면과 관리자 페이지 개발, 배포',
+  process:'요구 인터뷰 → 화면 스케치 공유 → 개발 → 현장 테스트',
+  outcome:'온라인 예약 접수 시작 (정량 수치가 있다면 추가 권장)',
+  tech:['Next.js','Supabase'],tags:['웹','외주'],
+  internalNote:'계약 금액은 여기에만 기록',
+  lessons:[
+   {type:'good',phase:'plan',situation:'요구사항 정리',content:'결과물 스케치를 먼저 보여 줘서 수정 요청을 초반에 끝냈다'},
+   {type:'bad',phase:'collab',situation:'결제 연동 범위',content:'결제 기능을 범위에 명시하지 않아 나중에 추가 견적이 필요했다'},
+   {type:'next',phase:'plan',situation:'견적 단계',content:'범위 밖 기능을 목록으로 적어 고객과 함께 확인한다'}
+  ]},
+ {id:'p4',title:'오픈소스 폼 컴포넌트 접근성 기여',category:'external',organization:'오픈소스 UI 라이브러리',role:'기여자',start:'2026-08-01',end:'2026-10-31',
+  summary:'폼 컴포넌트의 접근성 문제를 찾아 PR로 개선 (예시)',
+  problem:'스크린리더에서 에러 메시지가 입력 필드와 연결되지 않던 문제',
+  solution:'aria-describedby로 에러 메시지와 입력 필드를 연결하는 방식을 제안 (예시)',
+  contribution:'ARIA 속성 보완 PR 여러 건 작성, 리뷰 반영',
+  process:'이슈 확인 → 재현 → 작은 단위 PR → 리뷰 반영',
+  outcome:'관련 PR 병합 (예시)',
+  tech:['React','ARIA'],tags:['오픈소스'],
+  internalNote:'',
+  lessons:[
+   {type:'good',phase:'dev',situation:'PR 리뷰',content:'작은 단위로 나눠 올리니 리뷰가 빨리 끝났다'},
+   {type:'next',phase:'collab',situation:'커뮤니티 소통',content:'구현 전에 이슈 댓글로 방향을 먼저 확인한다'}
+  ]},
+ {id:'p5',title:'API 응답 캐싱 도입 (2025 예시)',category:'company',organization:'플랫폼팀',role:'백엔드 개발',start:'2025-07-01',end:'2025-10-31',
+  summary:'반복 조회가 많은 API에 캐시를 적용해 응답 속도를 개선 (예시)',
+  problem:'같은 데이터를 반복 조회해 DB 부하와 응답 지연이 발생',
+  solution:'Redis 캐시와 변경 시 무효화 규칙을 도입하는 방안을 제안 (예시)',
+  contribution:'캐시 키 설계, 무효화 로직 구현, 부하 테스트',
+  process:'병목 분석 → 캐시 전략 선정 → 단계적 적용 → 모니터링',
+  outcome:'주요 API 평균 응답 시간 절반 수준으로 감소 (예시)',
+  tech:['Node.js','Redis'],tags:['백엔드','성능'],
+  internalNote:'',
+  lessons:[
+   {type:'good',phase:'ops',situation:'단계적 배포',content:'트래픽 일부에만 먼저 적용해 문제를 조기에 발견했다'},
+   {type:'next',phase:'dev',situation:'캐시 무효화 설계',content:'무효화 조건을 구현 전에 표로 정리하고 리뷰받는다'}
+  ]}
+];
+
+let data=load()||structuredClone(SAMPLE);
+const EXP_KEY='year-archive-exports-v1';
+let exportsData=loadExports();
+const S={view:'home',sel:null,year:null,kw:null,lcat:'all',lyear:'all',lsort:'new',q:'',snap:null,snapEdit:null};
+let ex={tpl:'hiring',fields:[...TPL.hiring.fields],lt:[...TPL.hiring.lessons],mask:false,meta:[...TPL.hiring.meta],excluded:[]};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function loadExports(){try{const s=localStorage.getItem(EXP_KEY);return s?JSON.parse(s):[]}catch(e){return []}}
+function saveExports(){try{localStorage.setItem(EXP_KEY,JSON.stringify(exportsData))}catch(e){}}
+const dotted=s=>s?s.slice(0,10).replace(/-/g,'.'):'';
+const periodOf=p=>dotted(p.start)+' – '+dotted(p.end);
+const splitC=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
+const kwsOf=p=>[...p.tech,...p.tags];
+const yearOf=p=>+p.start.slice(0,4);
+const monthOf=p=>+p.start.slice(5,7);
+const allYears=()=>[...new Set(data.map(yearOf))].sort((a,b)=>b-a);
+
+/* ---------- 라우팅 ---------- */
+function clearSearch(){S.q='';$('#gq').value=''}
+function go(v){S.view=v;S.sel=null;S.snap=null;S.snapEdit=null;clearSearch();renderAll();window.scrollTo(0,0)}
+function goKw(k){S.view='keyword';S.kw=k;S.sel=null;clearSearch();renderAll();window.scrollTo(0,0)}
+function goMonth(y,n){
+  if(y) S.year=y;
+  S.view='year';S.sel=null;clearSearch();renderAll();
+  setTimeout(()=>{const el=document.getElementById('m'+n);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},0);
+}
+function openDetail(id){S.sel=id;renderAll();window.scrollTo(0,0)}
+function onSearch(v){S.q=v;S.sel=null;renderMain()}
+function renderNav(){
+  $('#nav').innerHTML=Object.entries(TABS).map(([k,v])=>{
+    const cnt=k==='list'?`<small>${data.length}</small>`:'';
+    return `<button class="${S.view===k&&!S.sel&&!S.q.trim()?'on':''}" onclick="go('${k}')">${v}${cnt}</button>`;
+  }).join('');
+}
+function renderAll(){renderNav();renderMain()}
+function renderMain(){
+  renderNav();
+  if(S.sel) return vDetail();
+  if(S.q.trim()) return vSearch();
+  ({home:vHome,list:vList,year:vYear,keyword:vKeyword,export:vExport})[S.view]();
+}
+const render=renderAll;
+
+/* ---------- 공통 조각 ---------- */
+function rowHTML(p){
+  return `<div class="ri" onclick="openDetail('${p.id}')">
+    <span class="ri-date">${dotted(p.start)}</span>
+    <div><div class="ri-t">${esc(p.title)}</div><div class="ri-s">${esc(p.organization)} · ${esc(p.role)}</div></div>
+    <span class="tag ${p.category}">${CAT[p.category]}</span>
+    <span class="ri-n">레슨런 ${p.lessons.length}</span>
+  </div>`;
+}
+function lessonCard(l){
+  return `<div class="lcard ${l.type}">
+    <div class="lt">${LT[l.type]} <span class="sub">· ${PH[l.phase]||''} · ${esc(l.pt||'')}</span></div>
+    <p class="sub" style="margin-top:6px">상황: ${esc(l.situation)}</p>
+    <p>${esc(l.content)}</p>
+    ${l.pid?`<div style="margin-top:10px"><button class="btn" onclick="openDetail('${l.pid}')">프로젝트 보기</button></div>`:''}
+  </div>`;
+}
+const stat=(n,l)=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`;
+
+/* ---------- 검색 ---------- */
+function vSearch(){
+  const t=S.q.trim().toLowerCase();
+  const ps=data.filter(p=>[p.title,p.summary,p.organization,p.role,p.problem,p.contribution,p.outcome,kwsOf(p).join(' ')].join(' ').toLowerCase().includes(t));
+  const ls=data.flatMap(p=>p.lessons.filter(l=>(l.situation+' '+l.content).toLowerCase().includes(t)).map(l=>({...l,pid:p.id,pt:p.title})));
+  $('#main').innerHTML=`
+  <div class="head"><h2>"${esc(S.q)}" 검색 결과</h2><p>프로젝트 ${ps.length}개 · 레슨런 ${ls.length}개</p></div>
+  <h3 class="sec-h">프로젝트</h3>
+  ${ps.length?`<div class="rows">${ps.map(rowHTML).join('')}</div>`:'<div class="empty">일치하는 프로젝트가 없습니다</div>'}
+  <h3 class="sec-h">레슨런</h3>
+  ${ls.length?`<div class="lgrid">${ls.map(lessonCard).join('')}</div>`:'<div class="empty">일치하는 레슨런이 없습니다</div>'}`;
+}
+
+/* ---------- 홈 ---------- */
+function vHome(){
+  const years=allYears();
+  const Y=years.includes(S.year)?S.year:years[0];
+  const counts=MONTHS.map((_,i)=>data.filter(p=>yearOf(p)===Y&&monthOf(p)===i+1).length);
+  const max=Math.max(1,...counts);
+  const kwMap={};
+  data.forEach(p=>kwsOf(p).forEach(k=>{kwMap[k]=(kwMap[k]||0)+1}));
+  const topKw=Object.entries(kwMap).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,10);
+  const recent=[...data].sort((a,b)=>b.start.localeCompare(a.start));
+  const lessonCount=data.reduce((a,p)=>a+p.lessons.length,0);
+  $('#main').innerHTML=`
+  <div class="head"><h2>홈</h2><p>전체 기록을 한눈에 봅니다</p></div>
+  <div class="metrics">
+    <div class="metric acc"><b>${data.length}</b><span>전체 프로젝트</span></div>
+    <div class="metric"><b>${data.filter(p=>p.category==='company').length}</b><span>회사 내</span></div>
+    <div class="metric"><b>${data.filter(p=>p.category==='external').length}</b><span>회사 외</span></div>
+    <div class="metric"><b>${new Set(data.flatMap(p=>p.tech)).size}</b><span>사용 기술</span></div>
+    <div class="metric"><b>${lessonCount}</b><span>기록한 레슨런</span></div>
+  </div>
+
+  <div class="panel-card">
+    <h3>월별 시작 프로젝트${Y?` · ${Y}년`:''}</h3>
+    <p class="sub">막대를 누르면 해당 월로 이동합니다</p>
+    <div class="bars">${counts.map((c,i)=>`<button class="bar-col" onclick="goMonth(${Y||0},${i+1})">
+      <div class="bar-area"><div class="bar-fill ${c?'hit':''}" style="height:${c?Math.max(18,c/max*130):6}px">${c?`<span>${c}</span>`:''}</div></div>
+      <small>${i+1}월</small></button>`).join('')}</div>
+  </div>
+
+  <h3 class="sec-h">최근 프로젝트</h3>
+  <div class="feats">${recent.slice(0,3).map(p=>`<div class="feat ${p.category}" onclick="openDetail('${p.id}')">
+    <span class="tag ${p.category}">${CAT[p.category]}</span>
+    <h4>${esc(p.title)}</h4>
+    <p class="sub">${esc(p.organization)}</p>
+    <p class="sub" style="margin-top:10px">${periodOf(p)}</p>
+    <div class="chips" style="margin-top:12px">${kwsOf(p).slice(0,3).map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
+  </div>`).join('')}</div>
+
+  <div class="grid2">
+    <div class="panel-card">
+      <h3>자주 쓴 키워드</h3>
+      <p class="sub">기술과 태그 상위 10개</p>
+      <div class="cloud" style="margin:0">${topKw.map(([k,c])=>`<button class="kw" data-k="${esc(k)}" onclick="goKw(this.dataset.k)">${esc(k)}<small>${c}</small></button>`).join('')}</div>
+    </div>
+    <div class="panel-card">
+      <h3>최근 추가</h3>
+      <p class="sub">추가한 순서 기준 최신 5개</p>
+      <div class="rows">${data.slice(0,5).map(p=>`<div class="ri" style="grid-template-columns:1fr auto;padding:10px 4px" onclick="openDetail('${p.id}')"><span class="ri-t" style="font-size:14px;font-weight:500">${esc(p.title)}</span><span class="ri-date">${dotted(p.start)}</span></div>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 프로젝트 목록 ---------- */
+function vList(){
+  const years=allYears();
+  const list=data.filter(p=>(S.lcat==='all'||p.category===S.lcat)&&(S.lyear==='all'||yearOf(p)===+S.lyear))
+    .sort((a,b)=>S.lsort==='new'?b.start.localeCompare(a.start):a.start.localeCompare(b.start));
+  $('#main').innerHTML=`
+  <div class="head"><h2>프로젝트</h2><p>${list.length}개 프로젝트</p></div>
+  <div class="toolbar">
+    <select onchange="S.lcat=this.value;renderMain()">
+      <option value="all">전체 구분</option>
+      <option value="company" ${S.lcat==='company'?'selected':''}>회사 내</option>
+      <option value="external" ${S.lcat==='external'?'selected':''}>회사 외</option>
+    </select>
+    <select onchange="S.lyear=this.value;renderMain()">
+      <option value="all">전체 연도</option>
+      ${years.map(y=>`<option value="${y}" ${S.lyear===String(y)?'selected':''}>${y}년</option>`).join('')}
+    </select>
+    <select onchange="S.lsort=this.value;renderMain()">
+      <option value="new" ${S.lsort==='new'?'selected':''}>최신순</option>
+      <option value="old" ${S.lsort==='old'?'selected':''}>오래된순</option>
+    </select>
+  </div>
+  <div class="rows">${list.map(rowHTML).join('')||'<div class="empty">조건에 맞는 프로젝트가 없습니다</div>'}</div>`;
+}
+
+/* ---------- 연도 · 월별 ---------- */
+function gantt(list,Y){
+  const head=`<div class="g-head"><div></div><div class="g-months">${MONTHS.map(m=>`<span>${m}</span>`).join('')}</div></div>`;
+  const rows=list.map(p=>{
+    const s=yearOf(p)===Y?monthOf(p):1;
+    const e=+p.end.slice(0,4)===Y?+p.end.slice(5,7):12;
+    return `<div class="g-row"><div class="g-label" onclick="openDetail('${p.id}')">${esc(p.title)}</div>
+      <div class="g-track"><div class="g-bar ${p.category}" style="left:${(s-1)/12*100}%;width:${(e-s+1)/12*100}%" onclick="openDetail('${p.id}')">${esc(p.title)}</div></div></div>`;
+  }).join('');
+  return head+rows;
+}
+function vYear(){
+  const years=allYears();
+  if(!years.length){$('#main').innerHTML='<div class="empty">프로젝트가 없습니다</div>';return}
+  if(!years.includes(S.year)) S.year=years[0];
+  const Y=S.year;
+  const list=data.filter(p=>yearOf(p)===Y).sort((a,b)=>a.start.localeCompare(b.start));
+  const byMonth=m=>list.filter(p=>monthOf(p)===m);
+  $('#main').innerHTML=`
+  <div class="head"><h2>연도 · 월별</h2><p>프로젝트는 시작한 달을 기준으로 정리합니다.</p></div>
+  <div class="seg">${years.map(y=>`<button class="${y===Y?'on':''}" onclick="S.year=${y};renderMain()">${y}년</button>`).join('')}</div>
+  <div class="stats">
+    ${stat(list.length,'프로젝트')}
+    ${stat(list.filter(p=>p.category==='company').length,'회사 내')}
+    ${stat(list.filter(p=>p.category==='external').length,'회사 외')}
+    ${stat(new Set(list.flatMap(p=>p.tech)).size,'사용 기술')}
+  </div>
+  <div class="mrow">${MONTHS.map((m,i)=>{const c=byMonth(i+1).length;return `<button class="mc ${c?'':'off'}" ${c?`onclick="document.getElementById('m${i+1}').scrollIntoView({behavior:'smooth',block:'start'})"`:'disabled'}><b>${i+1}월</b><small>${c}</small></button>`}).join('')}</div>
+  <div class="panel-card gantt">${list.length?gantt(list,Y):'<div class="empty">이 해의 프로젝트가 없습니다</div>'}</div>
+  ${MONTHS.map((m,i)=>{
+     const items=byMonth(i+1);
+     if(!items.length) return '';
+     return `<section class="msec" id="m${i+1}"><div class="mh"><h3>${i+1}월</h3><span>${items.length}개 시작</span></div><div class="rows">${items.map(rowHTML).join('')}</div></section>`;
+  }).join('')}`;
+}
+
+/* ---------- 키워드 ---------- */
+function pickKw(k){S.kw=S.kw===k?null:k;renderMain()}
+function vKeyword(){
+  const map={};
+  data.forEach(p=>kwsOf(p).forEach(k=>{map[k]=(map[k]||0)+1}));
+  const keys=Object.entries(map).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  const list=S.kw?data.filter(p=>kwsOf(p).includes(S.kw)).sort((a,b)=>b.start.localeCompare(a.start)):[];
+  $('#main').innerHTML=`
+  <div class="head"><h2>키워드</h2><p>기술과 태그별로 프로젝트를 모아 봅니다.</p></div>
+  <div class="cloud">${keys.map(([k,c])=>`<button class="kw ${S.kw===k?'on':''}" data-k="${esc(k)}" onclick="pickKw(this.dataset.k)">${esc(k)}<small>${c}</small></button>`).join('')}</div>
+  ${S.kw?`<h3 class="sec-h">${esc(S.kw)} · ${list.length}개</h3><div class="rows">${list.map(rowHTML).join('')}</div>`:'<div class="empty">키워드를 누르면 관련 프로젝트가 보입니다</div>'}`;
+}
+
+/* ---------- 상세 ---------- */
+function blk(t,v){return v?`<section class="d-block"><h4>${t}</h4><p>${esc(v)}</p></section>`:''}
+function vDetail(){
+  const p=data.find(x=>x.id===S.sel);
+  if(!p){S.sel=null;return renderAll()}
+  $('#main').innerHTML=`<div class="detail">
+    <button class="btn ghost" onclick="S.sel=null;renderMain()">← 돌아가기</button>
+    <div style="margin-top:14px"><span class="tag ${p.category}">${CAT[p.category]}</span></div>
+    <h1 class="d-title">${esc(p.title)}</h1>
+    <p class="d-meta">${esc(p.organization)} · ${esc(p.role)} · ${esc(periodOf(p))}</p>
+    <p class="d-sum">${esc(p.summary)}</p>
+    ${blk('Needs',p.problem)}${blk('Solution',p.solution)}${blk('내가 한 일',p.contribution)}${blk('진행 과정',p.process)}${blk('결과',p.outcome)}
+    <section class="d-block"><h4>사용 기술 · 태그</h4><div class="chips">${kwsOf(p).map(t=>`<span class="chip">${esc(t)}</span>`).join('')||'<span class="sub">-</span>'}</div></section>
+    <section class="d-block"><h4>레슨런</h4>
+      <div style="display:grid;gap:10px">${p.lessons.map(l=>`<div class="lcard ${l.type}"><div class="lt">${LT[l.type]} <span class="sub">· ${PH[l.phase]||''}</span></div><p class="sub" style="margin-top:4px">상황: ${esc(l.situation)}</p><p>${esc(l.content)}</p></div>`).join('')||'<p class="sub">아직 없음</p>'}</div>
+    </section>
+    <section class="d-block"><h4>내부 메모 (내보내기에서 제외)</h4><div class="memo">${esc(p.internalNote)||'-'}</div></section>
+    <div class="actions">
+      <button class="btn primary" onclick="openEditor('${p.id}')">수정</button>
+      <button class="btn danger" onclick="delProj('${p.id}')">삭제</button>
+    </div>
+  </div>`;
+}
+function delProj(id){
+  const p=data.find(x=>x.id===id);
+  if(!p||!confirm(`"${p.title}" 프로젝트를 삭제할까요? 되돌릴 수 없습니다.`)) return;
+  data=data.filter(x=>x.id!==id);save();S.sel=null;renderAll();
+}
+
+/* ---------- 편집기 ---------- */
+function openEditor(id){
+  const base=id?data.find(x=>x.id===id):{id:'p'+Date.now(),title:'',category:'company',organization:'',role:'',start:'2026-01-01',end:'2026-01-31',summary:'',problem:'',solution:'',contribution:'',process:'',outcome:'',tech:[],tags:[],internalNote:'',lessons:[{type:'good',phase:'dev',situation:'',content:''}]};
+  window._draft=JSON.parse(JSON.stringify(base));
+  drawEditor();
+  $('#modal').classList.add('open');
+}
+function closeModal(){$('#modal').classList.remove('open')}
+function drawEditor(){
+  const d=window._draft;
+  const inp=(k,lab,type='text')=>`<div><label>${lab}</label><input type="${type}" value="${esc(d[k])}" oninput="window._draft.${k}=this.value"></div>`;
+  const ta=(k,lab)=>`<label>${lab}</label><textarea rows="2" oninput="window._draft.${k}=this.value">${esc(d[k])}</textarea>`;
+  const lessons=d.lessons.map((l,i)=>`<div class="lbox">
+    <div class="row2">
+      <div><label>유형</label><select onchange="window._draft.lessons[${i}].type=this.value">${Object.entries(LT).map(([k,v])=>`<option value="${k}" ${l.type===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div><label>단계</label><select onchange="window._draft.lessons[${i}].phase=this.value">${Object.entries(PH).map(([k,v])=>`<option value="${k}" ${l.phase===k?'selected':''}>${v}</option>`).join('')}</select></div>
+    </div>
+    <label>상황</label><input value="${esc(l.situation)}" oninput="window._draft.lessons[${i}].situation=this.value">
+    <label>내용</label><textarea rows="2" oninput="window._draft.lessons[${i}].content=this.value">${esc(l.content)}</textarea>
+    <div style="margin-top:10px"><button class="btn danger" onclick="delLesson(${i})">이 레슨런 삭제</button></div>
+  </div>`).join('');
+  $('#sheet').innerHTML=`
+    <h2>${data.find(x=>x.id===d.id)?'프로젝트 수정':'새 프로젝트'}</h2>
+    <p class="sub" style="margin-bottom:8px">시작일 기준으로 연도와 월에 자동 분류됩니다.</p>
+    ${inp('title','프로젝트명')}
+    <div class="row2">
+      <div><label>구분</label><select onchange="window._draft.category=this.value">
+        <option value="company" ${d.category==='company'?'selected':''}>회사 내</option>
+        <option value="external" ${d.category==='external'?'selected':''}>회사 외</option></select></div>
+      ${inp('organization','클라이언트')}
+    </div>
+    <div class="row2">${inp('role','내 역할')}${inp('summary','한 줄 요약')}</div>
+    <div class="row2">${inp('start','시작일','date')}${inp('end','종료일','date')}</div>
+    ${ta('problem','Needs')}${ta('solution','Solution')}
+    ${ta('contribution','내가 한 일')}
+    ${ta('process','진행 과정')}
+    ${ta('outcome','결과 (수치 권장)')}
+    <label>사용 기술 (쉼표로 구분)</label>
+    <input value="${esc(d.tech.join(', '))}" onchange="window._draft.tech=splitC(this.value)">
+    <label>태그 (쉼표로 구분)</label>
+    <input value="${esc(d.tags.join(', '))}" onchange="window._draft.tags=splitC(this.value)">
+    ${ta('internalNote','내부 메모 (내보내기에서 항상 제외)')}
+    <label>레슨런 <span style="color:var(--bad)">* 필수 (1개 이상)</span></label>
+    ${lessons||'<p class="sub">아직 없음</p>'}
+    <div style="margin-top:12px"><button class="btn" onclick="addLesson()">+ 레슨런 추가</button></div>
+    <div id="err" style="display:none;color:var(--bad);font-size:13px;margin-top:12px"></div>
+    <div class="foot">
+      <button class="btn" onclick="closeModal()">취소</button>
+      <button class="btn primary" onclick="saveDraft()">저장</button>
+    </div>`;
+}
+function addLesson(){window._draft.lessons.push({type:'good',phase:'dev',situation:'',content:''});drawEditor()}
+function delLesson(i){window._draft.lessons.splice(i,1);drawEditor()}
+function saveDraft(){
+  const d=window._draft;
+  const fail=m=>{const err=$('#err');if(err){err.textContent=m;err.style.display='block'}};
+  const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'');
+  if(!isDate(d.start)) return fail('시작일을 입력해야 저장할 수 있습니다.');
+  if(!isDate(d.end)) return fail('종료일을 입력해야 저장할 수 있습니다.');
+  if(d.end<d.start) return fail('종료일이 시작일보다 빠릅니다.');
+  const lessons=d.lessons.filter(l=>(l.content||'').trim());
+  if(!lessons.length) return fail('레슨런을 최소 1개 적어야 저장할 수 있습니다.');
+  d.lessons=lessons;
+  const i=data.findIndex(x=>x.id===d.id);
+  if(i>=0) data[i]=d; else data.unshift(d);
+  save();
+  closeModal();
+  S.view='home'; S.sel=d.id; clearSearch();
+  renderAll();
+  window.scrollTo(0,0);
+}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+/* ---------- 내보내기 ---------- */
+function setTpl(k){ex.tpl=k;ex.fields=[...TPL[k].fields];ex.lt=[...TPL[k].lessons];ex.mask=TPL[k].mask;ex.meta=[...TPL[k].meta];renderMain()}
+function togM(k){ex.meta=ex.meta.includes(k)?ex.meta.filter(x=>x!==k):[...ex.meta,k];renderMain()}
+function togF(k){ex.fields=ex.fields.includes(k)?ex.fields.filter(x=>x!==k):[...ex.fields,k];renderMain()}
+function togL(k){ex.lt=ex.lt.includes(k)?ex.lt.filter(x=>x!==k):[...ex.lt,k];renderMain()}
+function togP(id){ex.excluded=ex.excluded.includes(id)?ex.excluded.filter(x=>x!==id):[...ex.excluded,id];renderMain()}
+// 현재 설정으로 결과 내용을 만든다. 저장하면 이 내용이 그대로 복사본이 된다.
+function buildSnap(){
+  const ps=data.filter(p=>!ex.excluded.includes(p.id)).sort((a,b)=>b.start.localeCompare(a.start));
+  const items=ps.map(p=>{
+    const org=ex.mask?(p.category==='company'?'국내 기업 (사내 프로젝트)':'외부 고객사'):p.organization;
+    // 회사명 가리기: 본문 안에 적힌 클라이언트명도 ○○로 바꾼다
+    const m=s=>ex.mask&&p.organization?String(s??'').split(p.organization).join('○○'):String(s??'');
+    const blocks=ex.fields.map(k=>{
+      if(k==='tech') return p.tech.length?{label:FIELDS.tech,text:p.tech.join(', '),inline:true}:null;
+      return p[k]?{label:FIELDS[k],text:m(p[k])}:null;
+    }).filter(Boolean);
+    const lessons=p.lessons.filter(l=>ex.lt.includes(l.type)).map(l=>({type:l.type,content:m(l.content)}));
+    return {pid:p.id,title:m(p.title),
+      meta:[org,periodOf(p),ex.meta.includes('role')?m(p.role):''].filter(Boolean).join(' · '),
+      summary:ex.meta.includes('summary')?m(p.summary):'',blocks,lessons};
+  });
+  return {heading:'포트폴리오',subtitle:TPL[ex.tpl].label,items};
+}
+function renderDoc(s){
+  const has=t=>String(t??'').trim();
+  const body=s.items.map(it=>`<div class="pj"><h4>${esc(it.title)}</h4>
+    ${has(it.meta)?`<div class="pvm">${esc(it.meta)}</div>`:''}
+    ${has(it.summary)?`<div style="white-space:pre-wrap">${esc(it.summary)}</div>`:''}
+    ${it.blocks.filter(b=>has(b.text)).map(b=>b.inline
+      ?`<div class="pvf"><b>${esc(b.label)}</b>: ${esc(b.text)}</div>`
+      :`<div class="pvf"><b>${esc(b.label)}</b><div style="white-space:pre-wrap">${esc(b.text)}</div></div>`).join('')}
+    ${(ls=>ls.length?`<div style="margin-top:10px"><b>레슨런</b>${ls.map(l=>`<div class="lesson ${l.type}"><b>${LT[l.type]}</b>: ${esc(l.content)}</div>`).join('')}</div>`:'')(it.lessons.filter(l=>has(l.content)))}
+  </div>`).join('');
+  return `<h2>${esc(s.heading)}</h2><div class="sub" style="margin-bottom:6px">${esc(s.subtitle)} · ${s.items.length}개 프로젝트</div>${body||'<p class="sub" style="padding:20px 0">선택된 프로젝트가 없습니다.</p>'}`;
+}
+
+/* ---------- 저장한 내보내기 결과 (복사본) ---------- */
+const pad=n=>String(n).padStart(2,'0');
+function fmtDT(iso){if(!iso)return '';const d=new Date(iso);return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function saveSnap(){
+  const s=buildSnap();
+  if(!s.items.length){alert('선택된 프로젝트가 없습니다.');return}
+  const now=new Date();
+  const snap={id:'e'+now.getTime(),name:`${TPL[ex.tpl].label} · ${fmtDT(now.toISOString())}`,createdAt:now.toISOString(),updatedAt:null,tpl:ex.tpl,...s};
+  exportsData.unshift(snap);saveExports();
+  openSnap(snap.id);
+}
+function openSnap(id){S.snap=id;S.snapEdit=null;renderMain();window.scrollTo(0,0)}
+function closeSnap(){S.snap=null;S.snapEdit=null;renderMain();window.scrollTo(0,0)}
+function delSnap(){
+  const s=exportsData.find(x=>x.id===S.snap);
+  if(!s||!confirm(`"${s.name}" 결과를 삭제할까요? 되돌릴 수 없습니다.`)) return;
+  exportsData=exportsData.filter(x=>x.id!==s.id);saveExports();closeSnap();
+}
+function editSnap(){S.snapEdit=JSON.parse(JSON.stringify(exportsData.find(x=>x.id===S.snap)));renderMain();window.scrollTo(0,0)}
+function setSE(path,v){const ks=path.split('.');let o=S.snapEdit;ks.slice(0,-1).forEach(k=>{o=o[k]});o[ks[ks.length-1]]=v}
+function delSEItem(i){S.snapEdit.items.splice(i,1);renderMain()}
+function cancelSnapEdit(){S.snapEdit=null;renderMain();window.scrollTo(0,0)}
+function saveSnapEdit(){
+  const d=S.snapEdit;
+  if(!d.name.trim()){alert('결과 이름을 입력해 주세요.');return}
+  d.updatedAt=new Date().toISOString();
+  const i=exportsData.findIndex(x=>x.id===d.id);
+  if(i>=0) exportsData[i]=d;
+  saveExports();S.snapEdit=null;renderMain();window.scrollTo(0,0);
+}
+function vSnap(){
+  const s=exportsData.find(x=>x.id===S.snap);
+  if(!s){S.snap=null;S.snapEdit=null;return vExport()}
+  if(S.snapEdit) return vSnapEdit();
+  $('#main').innerHTML=`
+  <div class="noprint">
+    <button class="btn ghost" onclick="closeSnap()">← 내보내기</button>
+    <div class="head" style="margin-top:10px"><h2>${esc(s.name)}</h2>
+      <p>저장 ${fmtDT(s.createdAt)}${s.updatedAt?` · 수정 ${fmtDT(s.updatedAt)}`:''} · 저장한 시점의 복사본이라 원본 프로젝트를 고쳐도 바뀌지 않습니다.</p></div>
+    <div class="toolbar">
+      <button class="btn primary" onclick="editSnap()">수정</button>
+      <button class="btn" onclick="window.print()">인쇄 / PDF 저장</button>
+      <button class="btn danger" onclick="delSnap()">삭제</button>
+    </div>
+  </div>
+  <div class="paper">${renderDoc(s)}</div>`;
+}
+function vSnapEdit(){
+  const s=S.snapEdit;
+  const ti=(path,v)=>`<input value="${esc(v)}" oninput="setSE('${path}',this.value)">`;
+  const ta=(path,v)=>`<textarea rows="3" oninput="setSE('${path}',this.value)">${esc(v)}</textarea>`;
+  $('#main').innerHTML=`
+  <div class="head"><h2>내보내기 결과 수정</h2><p>여기서 고친 내용은 이 결과에만 반영됩니다. 원본 프로젝트는 바뀌지 않습니다.</p></div>
+  <div class="paper snap-edit">
+    <label>결과 이름 (목록에 표시)</label>${ti('name',s.name)}
+    <label>문서 제목</label>${ti('heading',s.heading)}
+    <label>부제</label>${ti('subtitle',s.subtitle)}
+    ${s.items.map((it,i)=>`<div class="lbox">
+      <label>프로젝트명</label>${ti(`items.${i}.title`,it.title)}
+      <label>정보 줄 (클라이언트 · 기간 · 역할)</label>${ti(`items.${i}.meta`,it.meta)}
+      <label>한 줄 요약</label>${ta(`items.${i}.summary`,it.summary)}
+      ${it.blocks.map((b,j)=>`<label>${esc(b.label)}</label>${ta(`items.${i}.blocks.${j}.text`,b.text)}`).join('')}
+      ${it.lessons.map((l,j)=>`<label>레슨런 · ${LT[l.type]}</label>${ta(`items.${i}.lessons.${j}.content`,l.content)}`).join('')}
+      <div style="margin-top:10px"><button class="btn danger" onclick="delSEItem(${i})">이 프로젝트 빼기</button></div>
+    </div>`).join('')||'<p class="sub" style="margin-top:16px">남은 프로젝트가 없습니다.</p>'}
+    <p class="sub" style="margin-top:12px">내용을 비운 항목은 결과에 표시되지 않습니다.</p>
+    <div class="foot"><button class="btn" onclick="cancelSnapEdit()">취소</button><button class="btn primary" onclick="saveSnapEdit()">저장</button></div>
+  </div>`;
+}
+
+function vExport(){
+  if(S.snap) return vSnap();
+  $('#main').innerHTML=`
+  <div class="head noprint"><h2>내보내기</h2><p>대상에 맞는 포트폴리오를 만들고, 결과를 저장해 두었다가 수정할 수 있습니다. 원본은 바뀌지 않습니다.</p></div>
+  ${exportsData.length?`<div class="panel-card noprint" style="margin-bottom:20px">
+    <h3>저장한 결과</h3>
+    <p class="sub">저장한 시점의 복사본입니다. 눌러서 보거나 수정합니다.</p>
+    <div class="rows">${exportsData.map(s=>`<div class="ri" style="grid-template-columns:1fr auto auto;padding:10px 4px" onclick="openSnap('${s.id}')"><span class="ri-t" style="font-weight:500">${esc(s.name)}</span><span class="ri-n">${s.items.length}개 프로젝트</span><span class="ri-date">${fmtDT(s.updatedAt||s.createdAt)}</span></div>`).join('')}</div>
+  </div>`:''}
+  <div class="exp">
+    <div class="panel noprint opts">
+      <label>템플릿</label>
+      <select onchange="setTpl(this.value)">
+        ${Object.entries(TPL).map(([k,v])=>`<option value="${k}" ${ex.tpl===k?'selected':''}>${v.label}</option>`).join('')}
+      </select>
+      <label>기본 정보</label>
+      ${Object.entries(META).map(([k,v])=>`<label class="c"><input type="checkbox" ${ex.meta.includes(k)?'checked':''} onchange="togM('${k}')">${v}</label>`).join('')}
+      <label>포함할 항목</label>
+      ${Object.entries(FIELDS).map(([k,v])=>`<label class="c"><input type="checkbox" ${ex.fields.includes(k)?'checked':''} onchange="togF('${k}')">${v}</label>`).join('')}
+      <label>포함할 레슨런</label>
+      ${Object.entries(LT).map(([k,v])=>`<label class="c"><input type="checkbox" ${ex.lt.includes(k)?'checked':''} onchange="togL('${k}')">${v}</label>`).join('')}
+      <label>회사명</label>
+      <label class="c"><input type="checkbox" ${ex.mask?'checked':''} onchange="ex.mask=this.checked;renderMain()">회사명 가리기</label>
+      <label>프로젝트 선택</label>
+      ${data.map(p=>`<label class="c"><input type="checkbox" ${ex.excluded.includes(p.id)?'':'checked'} onchange="togP('${p.id}')">${esc(p.title)}</label>`).join('')}
+      <div class="warn">내부 메모는 어떤 템플릿에서도 포함되지 않습니다.</div>
+      <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" onclick="saveSnap()">결과 저장</button>
+        <button class="btn" onclick="window.print()">인쇄 / PDF 저장</button>
+      </div>
+      <div class="warn">결과 저장: 지금 미리보기 내용을 복사해 보관합니다. 저장한 결과는 따로 수정할 수 있습니다.</div>
+    </div>
+    <div class="paper">${renderDoc(buildSnap())}</div>
+  </div>`;
+}
+
+/* ---------- 단축키 ---------- */
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  if(e.key==='/' && tag!=='INPUT' && tag!=='TEXTAREA' && tag!=='SELECT'){e.preventDefault();$('#gq').focus()}
+  if(e.key==='Escape'){
+    if($('#modal').classList.contains('open')) closeModal();
+    else if(document.activeElement===$('#gq')){$('#gq').value='';onSearch('');$('#gq').blur()}
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>
