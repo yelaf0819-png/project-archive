@@ -200,7 +200,9 @@ aside{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);padd
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 
 <script>
-const KEY='year-archive-proto-v1';
+const KEY='year-archive-proto-v2';
+// 이전 버전에 저장된 데이터는 지운다 (2026-11 노션 데이터로 교체)
+['year-archive-proto-v1','year-archive-exports-v1'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 const LT={good:'잘된 점',bad:'아쉬웠던 점',next:'다음에 적용할 것'};
 const PH={plan:'기획',dev:'개발',ops:'운영',collab:'협업'};
 const FIELDS={problem:'Needs',solution:'Solution',contribution:'내가 한 일',process:'진행 과정',outcome:'결과',tech:'사용 기술'};
@@ -215,78 +217,241 @@ const TPL={
 };
 
 const SAMPLE=[
- {id:'p1',title:'결제 실패율 개선',category:'company',organization:'사내 커머스 플랫폼팀',role:'프론트엔드 리드',start:'2026-02-01',end:'2026-05-31',
-  summary:'결제 오류 화면과 재시도 흐름을 개선해 실패율을 낮춘 프로젝트 (예시)',
-  problem:'모바일 결제 실패의 원인이 안내 부족과 재시도 부재에 있었음',
-  solution:'실패 원인별 안내 화면과 자동 재시도 흐름을 제안 (예시)',
-  contribution:'결제 오류 화면 재설계, 자동 재시도 흐름 구현, 오류 이벤트 로그 정의',
-  process:'로그 분석 → 사용자 인터뷰 → 프로토타입 → A/B 테스트',
-  outcome:'결제 실패율 약 30% 감소 (예시 수치, 실제 데이터로 교체)',
-  tech:['React','TypeScript','Amplitude'],tags:['결제','UX'],
-  internalNote:'실 수치는 사내 대시보드 기준. 외부 공개 시 범위 표현으로 바꿀 것',
-  lessons:[
-   {type:'good',phase:'dev',situation:'A/B 테스트 설계',content:'실패 원인별로 지표를 나눠 정의해서 원인 분석이 빨랐다'},
-   {type:'bad',phase:'plan',situation:'요구사항 확정 전 착수',content:'범위가 두 번 바뀌어 초반 작업 일부를 버렸다'},
-   {type:'next',phase:'plan',situation:'범위가 불확실한 작업',content:'착수 전에 "이번 주 완료 범위"를 한 문장으로 합의한다'}
-  ]},
- {id:'p2',title:'사내 데이터 대시보드 자동화',category:'company',organization:'데이터분석팀',role:'개발 담당',start:'2026-06-01',end:'2026-09-30',
-  summary:'수작업으로 만들던 주간 리포트를 자동화한 프로젝트 (예시)',
-  problem:'매주 여러 쿼리를 손으로 실행하고 엑셀에 붙여 넣던 반복 작업',
-  solution:'쿼리를 표준화하고 스케줄러로 리포트를 자동 생성하는 구조를 제안 (예시)',
-  contribution:'SQL 쿼리 모듈화, 스케줄러 연결, 대시보드 템플릿 작성',
-  process:'현업 요구 정리 → 쿼리 표준화 → 스케줄 배포 → 운영 모니터링',
-  outcome:'주간 리포트 작성 시간 약 6시간 → 10분 (예시)',
-  tech:['Python','SQL','Airflow'],tags:['데이터','자동화'],
-  internalNote:'',
-  lessons:[
-   {type:'good',phase:'dev',situation:'스케줄러 연동',content:'실패 알림을 처음부터 넣어서 운영 중 장애를 바로 알 수 있었다'},
-   {type:'bad',phase:'collab',situation:'지표 정의 공유',content:'정의를 문서로 남기지 않아 같은 질문이 반복됐다'},
-   {type:'next',phase:'collab',situation:'다른 팀과 협업 시작',content:'첫 주에 지표 정의 문서를 만들고 공유한 뒤 개발을 시작한다'}
-  ]},
- {id:'p3',title:'동네 미용실 예약 웹사이트',category:'external',organization:'개인 고객 (동네 미용실)',role:'기획 · 개발 (1인)',start:'2026-03-01',end:'2026-04-30',
-  summary:'예약과 알림 기능을 갖춘 소형 웹사이트를 1인으로 개발 (예시)',
-  problem:'전화로만 받던 예약을 온라인으로 옮기고 싶다는 요청',
-  solution:'예약 화면과 알림, 간단한 관리자 페이지를 갖춘 소형 웹사이트를 제안 (예시)',
-  contribution:'요구사항 정리, 예약 화면과 관리자 페이지 개발, 배포',
-  process:'요구 인터뷰 → 화면 스케치 공유 → 개발 → 현장 테스트',
-  outcome:'온라인 예약 접수 시작 (정량 수치가 있다면 추가 권장)',
-  tech:['Next.js','Supabase'],tags:['웹','외주'],
-  internalNote:'계약 금액은 여기에만 기록',
-  lessons:[
-   {type:'good',phase:'plan',situation:'요구사항 정리',content:'결과물 스케치를 먼저 보여 줘서 수정 요청을 초반에 끝냈다'},
-   {type:'bad',phase:'collab',situation:'결제 연동 범위',content:'결제 기능을 범위에 명시하지 않아 나중에 추가 견적이 필요했다'},
-   {type:'next',phase:'plan',situation:'견적 단계',content:'범위 밖 기능을 목록으로 적어 고객과 함께 확인한다'}
-  ]},
- {id:'p4',title:'오픈소스 폼 컴포넌트 접근성 기여',category:'external',organization:'오픈소스 UI 라이브러리',role:'기여자',start:'2026-08-01',end:'2026-10-31',
-  summary:'폼 컴포넌트의 접근성 문제를 찾아 PR로 개선 (예시)',
-  problem:'스크린리더에서 에러 메시지가 입력 필드와 연결되지 않던 문제',
-  solution:'aria-describedby로 에러 메시지와 입력 필드를 연결하는 방식을 제안 (예시)',
-  contribution:'ARIA 속성 보완 PR 여러 건 작성, 리뷰 반영',
-  process:'이슈 확인 → 재현 → 작은 단위 PR → 리뷰 반영',
-  outcome:'관련 PR 병합 (예시)',
-  tech:['React','ARIA'],tags:['오픈소스'],
-  internalNote:'',
-  lessons:[
-   {type:'good',phase:'dev',situation:'PR 리뷰',content:'작은 단위로 나눠 올리니 리뷰가 빨리 끝났다'},
-   {type:'next',phase:'collab',situation:'커뮤니티 소통',content:'구현 전에 이슈 댓글로 방향을 먼저 확인한다'}
-  ]},
- {id:'p5',title:'API 응답 캐싱 도입 (2025 예시)',category:'company',organization:'플랫폼팀',role:'백엔드 개발',start:'2025-07-01',end:'2025-10-31',
-  summary:'반복 조회가 많은 API에 캐시를 적용해 응답 속도를 개선 (예시)',
-  problem:'같은 데이터를 반복 조회해 DB 부하와 응답 지연이 발생',
-  solution:'Redis 캐시와 변경 시 무효화 규칙을 도입하는 방안을 제안 (예시)',
-  contribution:'캐시 키 설계, 무효화 로직 구현, 부하 테스트',
-  process:'병목 분석 → 캐시 전략 선정 → 단계적 적용 → 모니터링',
-  outcome:'주요 API 평균 응답 시간 절반 수준으로 감소 (예시)',
-  tech:['Node.js','Redis'],tags:['백엔드','성능'],
-  internalNote:'',
-  lessons:[
-   {type:'good',phase:'ops',situation:'단계적 배포',content:'트래픽 일부에만 먼저 적용해 문제를 조기에 발견했다'},
-   {type:'next',phase:'dev',situation:'캐시 무효화 설계',content:'무효화 조건을 구현 전에 표로 정리하고 리뷰받는다'}
-  ]}
+ {
+  "id": "p1",
+  "organization": "리얼워크",
+  "title": "업무 프로세스 효율화",
+  "category": "company",
+  "role": "자발적 과제 추진 (기여도 100%)",
+  "start": "2024-12-01",
+  "end": "2024-12-31",
+  "summary": "필수 업무 범위를 넘어 조직의 잠재적 필요를 먼저 발견하고 실행한 경험",
+  "problem": "반복적이고 비효율적으로 소요되는 인수인계 및 행정 처리 단계를 시스템화하기 위한 자발적 과제 추진",
+  "solution": "",
+  "contribution": "- 반복 업무(세금계산서 발행, 홍보 채널 관리 등)의 누수 지점을 파악하여 단계별 가이드를 시각화한 업무 매뉴얼 개발",
+  "process": "",
+  "outcome": "인수인계 시간 1시간 이상 단축 및 신규 담당자의 업무 적응 신속화로 프로세스 안정성 기여",
+  "tech": [],
+  "tags": [
+   "자동화",
+   "시스템화"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "ops",
+    "situation": "",
+    "content": "누군가 지시하지 않아도 반복적인 업무 누수와 인수인계 상의 비효율을 문제로 정의하고, 이를 자발적으로 표준 가이드 및 매뉴얼로 시스템화하는 주도성을 학습했습니다.  담당자가 바뀌더라도 업무 퀄리티를 일정하게 유지할 수 있는 표준 운영 프로세스(SOP)의 중요성을 인지할 수 있었습니다."
+   }
+  ]
+ },
+ {
+  "id": "p2",
+  "organization": "대상주식회사",
+  "title": "CoC 내재화 전사 워크숍 콘텐츠 설계 PM",
+  "category": "company",
+  "role": "콘텐츠 설계 PM (기여도 30%)",
+  "start": "2025-04-01",
+  "end": "2025-05-31",
+  "summary": "현장 관찰을 바탕으로 참여자가 더 쉽고 빠르게 결과물을 도출할 수 있도록 프로세스 개선",
+  "problem": "전사 구성원이 체득해야 할 ’일하는 방식’을 실질적으로 수립할 수 있도록 돕는 인터벤션 기획",
+  "solution": "",
+  "contribution": "- 참여자들이 팀별 일하는 방식 수립에 어려움을 겪는 문제를 파악해, AI를 활용해 핵심가치와 연결된 일하는 방식 예시풀 유인물을 개발 및 제안",
+  "process": "",
+  "outcome": "예시 라이브러리 도입을 통해 팀별 일하는 방식 도출 속도 및 결과물의 구체성을 향상함",
+  "tech": [
+   "ChatGPT",
+   "생성형 AI"
+  ],
+  "tags": [
+   "AI활용",
+   "콘텐츠개발"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "dev",
+    "situation": "",
+    "content": "구성원이 워크숍 과정에서 겪는 실질적인 페인 포인트(행동 원칙 구체화의 어려움)를 선제적으로 포착하고, 이를 생성형 AI 기술을 활용해 해결하는 주도성을 발휘했습니다.  단순히 기존 방식을 고수하는 것이 아니라, 새로운 기술적 도구(AI)를 빠르게 학습하여 실무에 적용하고 기업 맞춤형 가이드 라이브러리를 구축함으로써 HR 콘텐츠 개발의 생산성과 속도를 획기적으로 개선하는 방법을 체득했습니다."
+   }
+  ]
+ },
+ {
+  "id": "p3",
+  "organization": "롯데웰푸드",
+  "title": "업무 비효율 제거 전사 워크숍 콘텐츠 설계 및 도구 개발 PM",
+  "category": "company",
+  "role": "콘텐츠 설계 및 도구 개발 PM (기여도 50%)",
+  "start": "2025-05-01",
+  "end": "2025-06-30",
+  "summary": "단일 이벤트가 아닌 ’조직이 변화할 수밖에 없는 구조’를 데이터와 개입 설계 관점으로 접근하는 역량 확보",
+  "problem": "사내 일하는 방식의 비효율을 진단하고 개선책을 실행으로 연결하기 위한 전사 프로젝트",
+  "solution": "",
+  "contribution": "- 도구 개발: 팀 내 업무 비효율 제거를 위한 맞춤형 진단 질문 36개 개발\n- PM: 워크숍 전(사전 임원설명회) → 중(워크숍) → 후(AI솔루션 팔로업)까지 전체 프로세스 운영\n- 배움: 일회성 이벤트가 아닌 ’전-중-후 인터벤션 구조 설계’를 통해 변화가 지속될 수 있는 HR 시스템 구축 체계를 체득함",
+  "process": "",
+  "outcome": "",
+  "tech": [],
+  "tags": [
+   "도구개발",
+   "전중후인터벤션"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "plan",
+    "situation": "",
+    "content": "조직의 변화를 이끄는 HR 프로그램은 일회성 이벤트가 아니라, 사전 얼라인먼트부터 사후 데이터 수집 및 피드백 루프까지 이어지는 '전-중-후 인터벤션 시스템 설계'가 핵심임을 깨달았습니다.  진단 질문지를 정교하게 설계하고 AI 솔루션을 활용한 리포팅 피드백 시스템을 연계해 보면서 데이터 기반 의사결정 및 사후 모니터링 체계를 구축하는 종합적인 변화 관리 시야를 확보했습니다."
+   }
+  ]
+ },
+ {
+  "id": "p4",
+  "organization": "현대자동차",
+  "title": "현장관리 역량 강화 과정 개발 및 운영 PM",
+  "category": "company",
+  "role": "과정 개발 및 운영 PM",
+  "start": "2026-02-01",
+  "end": "2026-04-30",
+  "summary": "경험이 쌓이며 단순 운영을 넘어 조직 구조와 니즈를 이해한 과정개발·도구개발까지 역할 확장",
+  "problem": "저연차 구성원들의 조기 적응과 현장관리 역량 강화를 위해, 직급 간 인식 차이를 좁히고 자발적 몰입을 유도하는 맞춤형 교육 과정 및 인터벤션 도구 개발.",
+  "solution": "",
+  "contribution": "- 설문 데이터 기반 인식 차이 정량화: 저연차 직급과 리더 직급을 대상으로 \"각자가 생각하는 프로다운 모습\" 및 \"신입 시절 겪은 페인 포인트\"에 대한 다각도 설문을 직접 설계·실행하여 정성적 인식을 데이터화함.\n- 참여형 게이미피케이션 도구 개발: 경직된 강의 위주 교육에서 벗어나 신입 사원들이 생각을 말랑말랑하게 열고 몰입할 수 있도록 유도하는 '맞춤형 보드게임' 교구 기획 및 개발.",
+  "process": "",
+  "outcome": "",
+  "tech": [],
+  "tags": [
+   "People_Analytics",
+   "과정개발"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "plan",
+    "situation": "",
+    "content": "리더와 신입 사원(G1) 간의 정성적인 갈등과 미스매치를 양방향 설계를 통한 정량 설문 데이터로 가공하고 이를 근거로 HR 솔루션을 도출하는 'People Analytics'의 실제 프로세스를 수행했습니다."
+   },
+   {
+    "type": "next",
+    "phase": "dev",
+    "situation": "",
+    "content": "경직되기 쉬운 신입 사원 교육에 생각을 열어주는 자체 보드게임 도구를 기획·도입해 보며, 데이터와 크리에이티브를 동시에 활용해 구성원의 자발적 몰입과 온보딩 경험을 극대화하는 설계 역량을 정립했습니다."
+   }
+  ]
+ },
+ {
+  "id": "p5",
+  "organization": "한국선교사자녀교육개발원",
+  "title": "MK 대학청년캠프 전체 사회 및 프로그램 퍼실리테이터",
+  "category": "external",
+  "role": "전체 사회 및 프로그램 퍼실리테이터",
+  "start": "2026-05-01",
+  "end": "2026-07-31",
+  "summary": "약 180명, 20개 팀 규모의 캠프에서 전체 사회 및 3개 핵심 프로그램을 설계 및 퍼실리테이션 (feat. AI활용 사이트 개발)",
+  "problem": "한국선교사자녀교육개발원(KOMKED) 주관 MK(선교사자녀) 대학청년캠프에서 전체 사회자 겸 핵심 프로그램 퍼실리테이터로  캠프 전반을 이끄는 3개 프로그램을 직접 설계·진행",
+  "solution": "",
+  "contribution": "설계 및 퍼실리테이션한 핵심 프로그램\n\n[팀별 그라운드룰 수립]\n- 배경/목적: 180명·20개 팀이 캠프 초반 처음 모여 함께 지낼 기간의 협업 기준이 필요했음. 각 팀이 스스로 중요하게 여기는 가치를 선택하고 이를 기반으로 그라운드룰을 직접 만들게 하여 자율적 팀 문화를 조성하고자 함.\n- 180명·20개 팀이 동시에 진행할 수 있도록 그라운드룰 수립 웹사이트를 Claude Code로 직접 개발하고, 대규모 인원도 이탈 없이 팀별 산출물을 도출하도록 프로그램 설계하여 퍼실리테이션함.\n\n[교사의 자격]\n- 배경/목적: 1주차 참가자(대학청년)가 2주차부터 유초등부·중고등부 학생을 돌보는 교사·스태프로 역할이 전환되는 구조. 그러나 절반 이상이 20살이며 캠프에 참여해보지 않은 사람들도 다수라 이들이 교사의 역할을 잘 수행할 수 있을지에 대한 캠프 주최측의 고민이 많았음. 이 고민을 해소하고자 역할 전환 전 어떤 교사가 되고 싶은지 스스로 성찰하고 다짐하게 하여, 준비된 마음가짐으로 다음 역할에 임하도록 돕기 위함.\n- 참가자들이 2주차에 맡을 교사·스태프 역할을 스스로 성찰하도록 개인 작성 → 팀 공유 → 리더진 스피치 → 개인 다짐 수립 순으로 이어지는 4단계 퍼실리테이션 설계·진행\n\n[전체 랩업(클로징)]\n- 배경/목적: 2주간의 캠프가 그냥 지나가는 이벤트로 끝나지 않고 참가자 개개인에게 의미 있는 성장 경험으로 남도록, 캠프 전체를 돌아보고 개인적 의미를 정리·공유하는 마무리 시간이 필요했음.\n- 캠프 전체를 디브리핑하고 참가자 각자의 의미 있는 순간을 나누도록 이끄는 클로징 세션 퍼실리테이션으로 캠프 경험을 개인의 성장 서사로 마무리",
+  "process": "",
+  "outcome": "180명 규모 오프라인 행사를 처음부터 끝까지 전체 사회 및 퍼실리테이션으로 이끌며, 대규모 현장 진행 역량과 Claude Code를 활용한 실시간 문제 해결 역량을 동시에 입증",
+  "tech": [
+   "Claude Code"
+  ],
+  "tags": [
+   "퍼실리테이션",
+   "클로드코드",
+   "오프라인교육"
+  ],
+  "internalNote": "",
+  "lessons": []
+ },
+ {
+  "id": "p6",
+  "organization": "한동대",
+  "title": "팀빌딩 프로젝트 ‘한뭉치’ 창립 및 운영",
+  "category": "external",
+  "role": "창립 및 운영",
+  "start": "2023-04-01",
+  "end": "2023-12-31",
+  "summary": "페인포인트 발견 후 8개월간 26개 팀 대상 맞춤형 팀빌딩 프로그램을 0에서 기획·운영",
+  "problem": "제로베이스 상태에서 공동체 문화 형성 및 협업 시너지 창출을 위한 맞춤형 팀빌딩 프로그램 개발 및 운영",
+  "solution": "",
+  "contribution": "- 임직원 라이프사이클 시뮬레이션: 프로그램 홍보, 참여팀 모집, 조직 진단 및 분석, 맞춤형 워크숍 설계 및 퍼실리테이션, 맞춤형 온보딩/오프보딩 프로세스 설계 및 리크루팅 총괄\n- 초기·중간·마무리 시점별 팀 니즈(협업 스타일, 갈등 해결 등)를 파악해 그라운드 룰을 세팅하고 구성원 간 시너지 창출",
+  "process": "",
+  "outcome": "8개월간 26개 팀(창업팀, 캡스톤 디자인팀 등)을 성공적으로 밀착 케어하며 갈등 조정 및 그라운드 룰 세팅 지원",
+  "tech": [],
+  "tags": [
+   "HR",
+   "FT",
+   "콘텐츠"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "plan",
+    "situation": "",
+    "content": "제로베이스에서 프로젝트를 창립하여 리크루팅, 온보딩, 오프보딩(Furtherwell 기획) 등 HR의 핵심 라이프사이클을 압축적이고 자기주도적으로 경험하며 기획가이자 실행가로서 성장했습니다."
+   }
+  ]
+ },
+ {
+  "id": "p7",
+  "organization": "한동교육개발원",
+  "title": "공동체 리더십 훈련 5주 특별과정 연구",
+  "category": "external",
+  "role": "교육 프로그램 연구 및 설계",
+  "start": "2023-09-01",
+  "end": "2023-12-31",
+  "summary": "",
+  "problem": "대학 내 공식 교과목(공동체리더십훈련)의 효과적인 이수를 돕기 위해, 리더십 핵심 주제를 깊이 있게 다루고 실질적인 토론을 유도하는 5차수 분량의 맞춤형 교육 프로그램 연구 및 설계.",
+  "solution": "",
+  "contribution": "- 내·외부 다각도 협업 리딩: 교내 담당 부서(한동교육개발원), 담당 교수진, 외부 리더십 전문가 등 다양한 이해관계자와 긴밀히 소통하며 프로그램을 조율함. 매주 전문가 자문 피드백 세션을 운영하여 콘텐츠의 퀄리티를 고도화함.\n- 업무 프로세스 효율화 (공통 템플릿 도입): 프로젝트 도중 학업 및 대외활동 병행으로 인한 팀원들의 리소스 부족과 R&R 불균형 문제를 인지함. 개별 부담을 줄이기 위해 가이드라인과 공통 콘텐츠 템플릿을 직접 설계·배포하여 개발 시간을 단축하고 협업 몰입도를 높임.",
+  "process": "",
+  "outcome": "차수당 1시간 15분 분량의 교육 패키지 5세트('Level UP')를 완성하였으며, 실제 다음 학기 전교생 대상 팀장 교육 과정의 공식 교재로 채택·배포됨.",
+  "tech": [],
+  "tags": [
+   "HR",
+   "콘텐츠"
+  ],
+  "internalNote": "",
+  "lessons": [
+   {
+    "type": "next",
+    "phase": "collab",
+    "situation": "",
+    "content": "리더로서 단순히 구성원의 업무 부족분을 자신이 메우는 방식은 장기적으로 지속 불가능하다는 것을 배웠습니다. 공통 템플릿과 프로세스 시스템화를 선제적으로 구축함으로써 팀 전체가 효율적으로 고품질의 성과를 낼 수 있는 구조를 만드는 법을 습득했습니다."
+   }
+  ]
+ },
+ {
+  "id": "p8",
+  "organization": "한국콘텐츠학회",
+  "title": "포스터 논문 게재",
+  "category": "external",
+  "role": "연구 수행 (리서치·실험 설계·데이터 분석·논문 작성)",
+  "start": "2022-09-01",
+  "end": "2022-10-31",
+  "summary": "",
+  "problem": "연구 주제: Personnel Manager Type (Human and AI) and Selection Process Satisfaction: Procedural Justice as a Moderator\n- 국내 4년제 대학생 208명을 대상으로 채용 주체(인간 vs AI)에 따른 지원자의 심리적 만족도 차이를 비교 분석하고 ’절차적 정의(Procedural Justice)’의 매개 효과 검증",
+  "solution": "",
+  "contribution": "- 리서치·실험 설계·데이터 분석·논문 작성 전 과정을 주도적으로 수행, AI 채용 시스템의 신뢰성과 후보자 경험 설계에 대한 실무적 통찰 확보\n- HR 실무적 인사이트: 채용 시스템 효율화(AI 도입) 과정에서 놓치기 쉬운 ’지원자 경험(Candidate Experience)’과 절차적 신뢰성의 핵심 변인을 정량적 데이터로 증명",
+  "process": "",
+  "outcome": "",
+  "tech": [],
+  "tags": [
+   "채용",
+   "HR 데이터분석"
+  ],
+  "internalNote": "",
+  "lessons": []
+ }
 ];
 
 let data=load()||structuredClone(SAMPLE);
-const EXP_KEY='year-archive-exports-v1';
+const EXP_KEY='year-archive-exports-v2';
 let exportsData=loadExports();
 const S={view:'home',sel:null,year:null,kw:null,lcat:'all',lyear:'all',lsort:'new',q:'',snap:null,snapEdit:null};
 let ex={tpl:'hiring',fields:[...TPL.hiring.fields],lt:[...TPL.hiring.lessons],mask:false,meta:[...TPL.hiring.meta],excluded:[]};
@@ -343,7 +508,7 @@ function rowHTML(p){
 function lessonCard(l){
   return `<div class="lcard ${l.type}">
     <div class="lt">${LT[l.type]} <span class="sub">· ${PH[l.phase]||''} · ${esc(l.pt||'')}</span></div>
-    <p class="sub" style="margin-top:6px">상황: ${esc(l.situation)}</p>
+    ${l.situation?`<p class="sub" style="margin-top:6px">상황: ${esc(l.situation)}</p>`:""}
     <p>${esc(l.content)}</p>
     ${l.pid?`<div style="margin-top:10px"><button class="btn" onclick="openDetail('${l.pid}')">프로젝트 보기</button></div>`:''}
   </div>`;
@@ -503,7 +668,7 @@ function vDetail(){
     ${blk('Needs',p.problem)}${blk('Solution',p.solution)}${blk('내가 한 일',p.contribution)}${blk('진행 과정',p.process)}${blk('결과',p.outcome)}
     <section class="d-block"><h4>사용 기술 · 태그</h4><div class="chips">${kwsOf(p).map(t=>`<span class="chip">${esc(t)}</span>`).join('')||'<span class="sub">-</span>'}</div></section>
     <section class="d-block"><h4>레슨런</h4>
-      <div style="display:grid;gap:10px">${p.lessons.map(l=>`<div class="lcard ${l.type}"><div class="lt">${LT[l.type]} <span class="sub">· ${PH[l.phase]||''}</span></div><p class="sub" style="margin-top:4px">상황: ${esc(l.situation)}</p><p>${esc(l.content)}</p></div>`).join('')||'<p class="sub">아직 없음</p>'}</div>
+      <div style="display:grid;gap:10px">${p.lessons.map(l=>`<div class="lcard ${l.type}"><div class="lt">${LT[l.type]} <span class="sub">· ${PH[l.phase]||''}</span></div>${l.situation?`<p class="sub" style="margin-top:4px">상황: ${esc(l.situation)}</p>`:""}<p>${esc(l.content)}</p></div>`).join('')||'<p class="sub">아직 없음</p>'}</div>
     </section>
     <section class="d-block"><h4>내부 메모 (내보내기에서 제외)</h4><div class="memo">${esc(p.internalNote)||'-'}</div></section>
     <div class="actions">
